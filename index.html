@@ -82,7 +82,7 @@ h1, h2, p, blockquote { margin: 0; }
   padding-top: calc(var(--safe-t) + 8px);
 }
 #site-logo {
-  width: min(72vw, 300px);
+  width: min(42vw, 172px);
   height: auto;
   user-select: none;
   pointer-events: none;
@@ -94,10 +94,10 @@ body[data-screen="result"] #site-logo {
   margin-bottom: -6px;
 }
 @media (max-height: 720px) {
-  body[data-screen="oracle"] #site-logo { width: min(58vw, 236px); }
+  body[data-screen="oracle"] #site-logo { width: min(34vw, 140px); }
 }
 @media (max-height: 620px) {
-  body[data-screen="oracle"] #site-logo { width: min(48vw, 196px); }
+  body[data-screen="oracle"] #site-logo { width: min(28vw, 116px); }
 }
 
 main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: column; }
@@ -105,8 +105,7 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
 
 /* ===== HOME ===== */
 #screen-oracle { justify-content: flex-start; text-align: center; padding-bottom: calc(24px + var(--safe-b)); }
-.oracle-await { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.oracle-listen, .oracle-draw { width: 100%; display: flex; flex-direction: column; align-items: center; }
+#screen-oracle .prompt { margin: 2px 0 8px; }
 #screen-oracle .fine { margin-top: auto; }
 .prompt {
   font-family: var(--font-serif);
@@ -201,14 +200,43 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
 
 .tong-wrap {
   position: relative;
-  width: min(64vw, 260px);
-  margin: 4px auto 8px;
+  display: block;
+  width: min(58vw, 236px);
+  margin: 48px auto 8px;
   aspect-ratio: 240 / 320;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  overflow: visible;
+  flex-shrink: 0;
 }
-.tong-svg { width: 100%; height: 100%; overflow: visible; }
+.tong-wrap:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 6px;
+  border-radius: 16px;
+}
+.tong-svg { width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .tong-wrap.idle { animation: idle-sway 3.6s ease-in-out infinite; }
 .tong-wrap.shaking { animation: shake-tong 0.12s linear infinite; }
-.tong-wrap.rising .stick-drawn { animation: stick-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+.tong-wrap.nudge { animation: tong-nudge 0.42s ease-out; }
+.tong-wrap.rising .stick-rise { animation: stick-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+.tong-wrap.shot-mid {
+  animation: none !important;
+  transform: rotate(-9deg) translate(-6px, 2px);
+}
+.tong-wrap.shot-mid .stick-rise {
+  animation: none !important;
+  transform: translateY(-40px);
+}
+@keyframes tong-nudge {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-8deg) translate(-4px, 1px); }
+  45% { transform: rotate(7deg) translate(4px, -1px); }
+  70% { transform: rotate(-4deg); }
+}
 @keyframes idle-sway {
   0%, 100% { transform: rotate(-1.6deg) translateY(0); }
   50% { transform: rotate(1.6deg) translateY(-3px); }
@@ -222,7 +250,7 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
 }
 @keyframes stick-rise {
   from { transform: translateY(0); opacity: 1; }
-  to { transform: translateY(-86px); opacity: 1; }
+  to { transform: translateY(-56px); opacity: 1; }
 }
 .status-line {
   font-family: var(--font-serif);
@@ -230,7 +258,22 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
   letter-spacing: 0.16em;
   color: var(--white-80);
   min-height: 1.4em;
-  margin-bottom: 10px;
+  margin: 2px 0 8px;
+}
+#btn-retry-mic { margin: 0 0 8px; }
+#debug-panel {
+  width: min(100%, 300px);
+  margin: 4px 0 8px;
+}
+.debug-live {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0;
+  color: var(--white-80);
+  text-align: left;
+  margin: 6px 0 8px;
+  line-height: 1.4;
+  word-break: break-all;
 }
 
 .meter-block { width: min(100%, 280px); margin: 4px 0 14px; }
@@ -523,7 +566,7 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 @media (prefers-reduced-motion: reduce) {
-  .tong-wrap.idle, .tong-wrap.shaking, .tong-wrap.rising .stick-drawn, .clap-dot.on .clap-orb {
+  .tong-wrap.idle, .tong-wrap.shaking, .tong-wrap.nudge, .tong-wrap.rising .stick-rise, .clap-dot.on .clap-orb {
     animation: none;
   }
   #site-logo { transition: none; }
@@ -531,13 +574,15 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
 
 @media (max-height: 740px) {
   body[data-screen="result"] #site-logo { width: min(28vw, 112px); margin-top: -8px; margin-bottom: -10px; }
-  body[data-screen="oracle"] #site-logo { width: min(58vw, 236px); }
-  #screen-oracle .prompt { font-size: 20px; margin-top: 0; margin-bottom: 18px; }
+  body[data-screen="oracle"] #site-logo { width: min(34vw, 140px); }
+  #screen-oracle .prompt { font-size: 20px; margin-top: 0; margin-bottom: 6px; }
+  .tong-wrap { width: min(50vw, 200px); margin-top: 24px; }
   .clap-orb { width: 48px; height: 48px; }
   .clap-row { margin-bottom: 10px; }
 }
 @media (max-height: 640px) {
-  body[data-screen="oracle"] #site-logo { width: min(48vw, 196px); }
+  body[data-screen="oracle"] #site-logo { width: min(28vw, 116px); }
+  .tong-wrap { width: min(42vw, 168px); margin-top: 12px; }
 }
 
   </style>
@@ -554,20 +599,24 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
     <section id="screen-oracle" class="screen" aria-label="求籤">
       <h1 class="prompt">請拍手兩聲許願</h1>
 
-      <div class="oracle-await" id="oracle-await">
-        <button type="button" class="btn btn-primary" id="btn-start">輕觸開啟許願</button>
-      </div>
+      <button type="button" class="tong-wrap idle" id="tong" aria-label="輕觸籤筒開始"></button>
+      <p class="status-line" id="oracle-hint">輕觸籤筒開始</p>
+      <button type="button" class="btn-text" id="btn-retry-mic" hidden>再試一次麥克風</button>
 
-      <div class="oracle-listen" id="oracle-listen" hidden>
-        <p class="status-line" id="listen-status">靠近手機，拍兩下手</p>
+      <div id="debug-panel" hidden>
         <div class="meter-block" id="meter-block">
           <div class="meter-track" aria-hidden="true">
             <div class="meter-fill" id="meter-fill"></div>
             <div class="meter-threshold" id="meter-threshold"></div>
           </div>
-          <p class="visually-hidden" id="meter-live">麥克風音量</p>
         </div>
-        <div class="clap-row" aria-live="polite">
+        <p class="debug-live" id="debug-live">lvl —</p>
+        <div class="sens">
+          <span>低</span>
+          <input id="sensitivity" type="range" min="0" max="100" value="80" aria-label="拍手靈敏度">
+          <span>高</span>
+        </div>
+        <div class="clap-row" aria-hidden="true">
           <div class="clap-dot" id="clap-1">
             <div class="clap-orb">一</div>
             <span class="label">第一聲</span>
@@ -577,29 +626,12 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
             <span class="label">第二聲</span>
           </div>
         </div>
-        <div class="sens">
-          <span>低</span>
-          <input id="sensitivity" type="range" min="0" max="100" value="60" aria-label="拍手靈敏度">
-          <span>高</span>
-        </div>
-        <p class="hint">現場比較吵，請把靈敏度往左調低</p>
-        <button type="button" class="btn-text" id="btn-fallback-listen">現場太吵？改為輕觸抽籤</button>
-      </div>
-
-      <div class="denied-box" id="denied-box" hidden>
-        <p id="denied-text">無法使用麥克風時，也可以輕觸抽籤。</p>
-        <button type="button" class="btn btn-primary" id="btn-tap-draw">輕觸抽籤</button>
-        <button type="button" class="btn-text" id="btn-retry-mic">再試一次麥克風</button>
-      </div>
-
-      <div class="oracle-draw" id="oracle-draw" hidden>
-        <p class="status-line" id="draw-status">求籤中</p>
       </div>
 
       <p class="fine">良緣社　本頁不蒐集任何資料</p>
     </section>
 
-    <section id="screen-result" class="screen" hidden aria-label="籤詩">
+    <section id="screen-result"    <section id="screen-result" class="screen" hidden aria-label="籤詩">
       <div class="result-inner">
         <p class="lot-meta">
           <span id="lot-no"></span>
@@ -671,9 +703,9 @@ const SHOPLINE_PRODUCTS = {
 const LOTS = [{"n":1,"name":"紅鸞星動","fortune":"大吉","verse":"月老翻紅本　你的名字被圈起\n不是巧合是他刻意繞回你身邊","explain":"紅鸞星動，主姻緣主動示現。此籤主動而非等待，凡有意者宜把握，勿疑而錯失良機。","punch":"別懷疑了，這不是你想太多，是他真的在想你。","detail":{"曖昧告白":"對方的曖昧是認真的，不是你自作多情，可以往前一步。","穩定關係":"感情正處於加溫期，適合主動安排下一次見面或升級關係。","復合":"若問復合，此籤偏向對方也有意願，時機正好，可以釋出訊號。","社群動態":"他的已讀不回，是在想怎麼回才夠帥，別急著解讀成冷淡。","建議":"把握這波主動權，該說的話不用再憋著。"}},{"n":2,"name":"命中歸檔","fortune":"大吉","verse":"找了那麼久終於歸檔　這個人不用再比較了\n你的心自動把他設成預設值","explain":"此籤主緣分落定，情歸有主，非曇花一現之情，宜珍視眼前，不必再回頭張望他人。","punch":"恭喜結案，你的心終於停止開新分頁了。","detail":{"曖昧告白":"這段關係已經超越曖昧，該進入下一階段的討論了。","穩定關係":"適合談長期規劃，這籤主穩固，經得起現實考驗。","復合":"此籤不主復合，因為現在的緣分比過去的更值得。","社群動態":"你已經很久沒去看前任的動態了，這是好事，代表真的放下。","建議":"別再無意識比較，這個人值得你全心投入。"}},{"n":3,"name":"全糖不去冰","fortune":"大吉","verse":"兩人黏得像珍奶封膜　撕開都捨不得\n這波甜度連隔壁都聞得到","explain":"此籤主情濃如蜜，正值熱戀高峰，然甜蜜之餘宜留一分清醒，勿因濃情而忽略生活本分。","punch":"閃光彈已上膛，記得防曬也要防閃瞎朋友。","detail":{"曖昧告白":"這階段已經不用告白了，你們早就用行動說明白了。","穩定關係":"熱戀期濃度爆表，記得把這股熱情存一點下來給平淡期用。","復合":"此籤不涉復合，你正忙著跟現在這個人甜蜜，沒空想別人。","社群動態":"放閃前先想想，這波甜蜜是要曬還是要藏，兩種都合理。","建議":"甜的時候也別忘了正常吃飯睡覺，愛情不能取代生活機能。"}},{"n":4,"name":"已讀秒回","fortune":"上上","verse":"上一秒你才傳出去　下一秒他已讀已回\n這速度連演算法都嫉妒","explain":"此籤主回應積極，對方態度轉為熱絡，凡溝通之事皆宜趁此順風而行。","punch":"秒回不是巧合，是他手機根本沒放下過。","detail":{"曖昧告白":"對方的積極回應是明確信號，這時候告白成功率很高。","穩定關係":"溝通順暢期，適合談一些平常不敢開口的話題。","復合":"若對象是舊愛，秒回代表對方也在等你先開口，可以一試。","社群動態":"已讀秒回加上主動聊開話題，這不是禮貌，是喜歡。","建議":"順著這股熱度往前走，別因為想太多而錯過節奏。"}},{"n":5,"name":"破冰成功","fortune":"上上","verse":"那段尷尬到腳趾抓地的沉默　終於過去了\n現在你們聊天像認識十年","explain":"此籤主關係轉折，原本生澀之情漸入佳境，宜順勢深化交流，不必再過度拘謹。","punch":"恭喜過關，接下來可以正常做自己了。","detail":{"曖昧告白":"尷尬期結束代表信任建立，是告白的好時機。","穩定關係":"磨合期已過，接下來要練習的是長期相處的默契。","復合":"若曾經有心結，此籤主誤會化解，適合坦誠溝通。","社群動態":"你們開始會互相標記彼此的貼文，這是關係升溫的訊號。","建議":"別再把「怕尷尬」當藉口，你們早就過了那關了。"}},{"n":6,"name":"舊愛新生","fortune":"上上","verse":"同一個人　卻活成不一樣的兩人重逢\n這次沒有舊帳只有新故事","explain":"此籤主舊情復萌，然非重蹈覆轍，乃雙方成長後之重新開始，主吉，宜坦誠面對過往課題。","punch":"這不是舊愛回鍋，是升級版本重新上線。","detail":{"曖昧告白":"若是舊識重新曖昧，此籤主雙方都準備好了，可以再靠近。","穩定關係":"若已復合，此籤主感情比從前更成熟穩固。","復合":"主吉，復合成功率高，但建議先誠實面對當初分開的原因。","社群動態":"對方主動追蹤或按讚你的近況，是重新靠近的訊號。","建議":"這次可以帶著上次學到的教訓，好好談一場不重複錯誤的戀愛。"}},{"n":7,"name":"好友升級","fortune":"上上","verse":"認識三年才發現　朋友清單裡藏著命定\n原來曖昧一直都在，只是你們叫它義氣","explain":"此籤主情由友生，根基深厚，較速食戀情更為長久，宜珍惜此得來不易之信任基礎。","punch":"別人要花三年培養默契，你們已經內建好了。","detail":{"曖昧告白":"從朋友發展的曖昧最怕遲疑，此籤鼓勵誠實面對自己的心動。","穩定關係":"友情基底的關係通常更耐磨，適合坦然討論未來。","復合":"此籤不主舊愛復合，主的是新緣分的萌芽。","社群動態":"你們的聊天記錄已經比多數情侶還長，這不是巧合。","建議":"勇敢一點，別讓「怕破壞友情」變成錯過的藉口。"}},{"n":8,"name":"光速心動","fortune":"上","verse":"才見第二次面　你已經在腦內排好婚紗款式\n心動的速度連你自己都嚇到","explain":"此籤主一見傾心，發展迅速，然速成之情宜多一分觀察，勿因心急而忽略真實相處細節。","punch":"慢一點，心動可以光速，了解一個人不行。","detail":{"曖昧告白":"心動歸心動，告白前建議再多相處幾次確認感覺。","穩定關係":"快速升溫的關係要記得補足基礎的了解，別只靠感覺衝刺。","復合":"此籤不涉復合，主的是全新的心動對象。","社群動態":"忍不住想翻對方所有的舊貼文，這是正常的，但別翻到對方發現。","建議":"心動可以誠實，但決定可以慢一點下。"}},{"n":9,"name":"深夜限動","fortune":"上","verse":"十一點半的限動　只按給一個人看\n那個秒讚的人，此刻也沒睡","explain":"此籤主暗中留意，兩情皆有靈犀，然未挑明之情如霧中花，宜找機會坦白心意。","punch":"你們互相觀察對方半年了，也該正式見面聊聊了。","detail":{"曖昧告白":"深夜互動頻繁是明確的曖昧信號，適合找機會約出來聊。","穩定關係":"若已是伴侶，深夜互動代表關係中還有惦記，是好事。","復合":"此籤不主復合，主的是新曖昧對象的醞釀期。","社群動態":"秒讚、限動互看，這些小動作累積起來就是答案。","建議":"與其在限動裡猜心意，不如直接約一次見面。"}},{"n":10,"name":"主動出擊","fortune":"上","verse":"深呼吸三次　那句話終於說出口\n世界沒有塌，只有你的心跳超標","explain":"此籤主主動有成，勇氣終得回報，凡欲表達心意者，此時宜行動，猶豫反失良機。","punch":"說出口最可怕的部分，是決定要不要說，不是結果。","detail":{"曖昧告白":"主吉，這是告白的好時機，猶豫只會拖長焦慮。","穩定關係":"若是關係中的重要對話，此籤鼓勵主動開口而非等待。","復合":"若想復合，此籤鼓勵誠實表態，被動等待不會有結果。","社群動態":"別再用限動暗示，這籤要你直接說出口。","建議":"你已經準備好了，只是需要一個推力，這就是那個推力。"}},{"n":11,"name":"甜蜜復健","fortune":"上","verse":"吵架吵到摔門　隔天卻黏得像沒事發生過\n你們吵架的方式，比別人放閃還甜","explain":"此籤主爭執後和解，感情經考驗而更堅韌，凡感情中有摩擦者，宜視為磨合而非破裂。","punch":"恭喜你們找到了吵架也能維持關係的高階版本。","detail":{"曖昧告白":"此籤不涉曖昧，主的是穩定關係中的修復力。","穩定關係":"吵架後主動和好是關係健康的證明，別把吵架當成警訊。","復合":"若因吵架分開，此籤主和好機率高，誠意溝通即可修復。","社群動態":"吵架期間別急著發洩到社群上，留點空間好好談。","建議":"吵架不是問題，不修復才是問題，你們已經在對的路上。"}},{"n":12,"name":"穩定續約","fortune":"中上","verse":"三年了　愛情變成一種習慣的形狀\n平淡不是變淡，是省略了驚嘆號","explain":"此籤主感情穩固，然日久難免疏於經營，宜適時添增新意，勿因習慣而忽略對方感受。","punch":"穩定不是終點，是需要續約的長期合約。","detail":{"曖昧告白":"此籤不主曖昧，主的是穩定關係的維護課題。","穩定關係":"感情根基穩固，建議主動安排一些新鮮感，避免陷入自動導航模式。","復合":"此籤不涉復合，你現在的關係值得投入更多心力。","社群動態":"你們的合照越來越少了嗎？找時間認真約會拍幾張新的。","建議":"穩定的關係也需要主動經營，別把對方的存在當成理所當然。"}},{"n":13,"name":"曖昧升溫中","fortune":"中上","verse":"訊息從單字回覆　變成一大段語音\n溫度正在悄悄調高，只是還沒人承認","explain":"此籤主情勢向好，然雙方皆未明說，主吉之兆漸顯，宜順其自然，不必操之過急。","punch":"你們已經在戀愛前傳，只差沒人按下播放鍵。","detail":{"曖昧告白":"曖昧正往好方向發展，再多一點耐心，時機快到了。","穩定關係":"若已是伴侶，此籤主感情正在加溫，關係品質提升中。","復合":"此籤不主復合，主的是新對象曖昧的健康發展。","社群動態":"從已讀不回到主動傳語音，這個轉變值得注意。","建議":"不用急著定義關係，讓它自然發展，但也別假裝沒發現溫度在升高。"}},{"n":14,"name":"遠距離充電","fortune":"中上","verse":"隔著螢幕說晚安　時差偷走了擁抱的時間\n但想念從沒打過折","explain":"此籤主情感雖遠而堅，考驗雖多，然真心不減，宜以信任與溝通維繫，終能修得團圓。","punch":"距離考驗的不是感情，是你們願不願意多花點力氣。","detail":{"曖昧告白":"遠距離的曖昧建議先確認彼此對未來的想像是否一致。","穩定關係":"遠距離關係辛苦但正在累積信任存款，撐過去會更堅固。","復合":"若因距離分開，此籤主只要有心，距離不是絕對障礙。","社群動態":"定期分享生活細節比每天說晚安更能維繫感情。","建議":"訂一個明確的重聚計畫，讓等待有方向而不是無限期。"}},{"n":15,"name":"舊訊息重啟","fortune":"中上","verse":"已經半年沒動靜的對話框　突然跳出新訊息\n你盯著看了三分鐘才敢點開","explain":"此籤主故人重新來訪，善意居多，然宜先觀察其動機，勿因久別重逢而失去戒心。","punch":"半年沒訊息突然傳來，先別急著感動，看看他想幹嘛。","detail":{"曖昧告白":"若對方重新示好且態度誠懇，可以給彼此一個重新認識的機會。","穩定關係":"此籤與現有穩定關係無涉，可安心無須多慮。","復合":"對方主動聯繫代表有復合意願，但建議先釐清當初分開的原因是否已解決。","社群動態":"突然的已讀或按讚，往往是重新靠近的第一步試探。","建議":"可以回應，但別立刻掏心掏肺，先看看對方這次是不是真的不一樣。"}},{"n":16,"name":"曖昧慢性病","fortune":"中","verse":"天天聊天卻沒有明天　你們穩定地曖昧著\n穩定到連月老都想放棄治療","explain":"此籤情事久拖不決，非吉非凶，主現狀持續。若欲轉正，需一方主動破局；若安於曖昧，亦無妨，唯損耗心力宜自量。","punch":"你們感情很穩定——穩定地卡住。","detail":{"曖昧告白":"關係已進入保存期限倒數，但沒人按下停損鍵，該有人先開口了。","穩定關係":"此籤不主穩定關係，主的正是遲遲無法定義的模糊地帶。","復合":"此籤不涉復合，眼前這段曖昧才是需要處理的課題。","社群動態":"限動互動頻繁，訊息已讀卻慢半拍，這是曖昧的標準潛伏期。","建議":"與其等對方表態，不如先問自己還要耗多久。"}},{"n":17,"name":"忙碌型冷淡","fortune":"中","verse":"他說最近很忙　訊息從一天十句變成一天一句\n你分不清是真的忙，還是委婉的降溫","explain":"此籤主情勢趨緩，然未必是壞事，宜先確認是外務所累抑或心意轉淡，勿妄自揣測而自傷。","punch":"忙是真的，但「忙到沒空回你」通常也是真的態度。","detail":{"曖昧告白":"對方回應變少時不建議此刻告白，先觀察一段時間再說。","穩定關係":"若是穩定關係中的忙碌期，建議主動溝通感受，別悶著自己猜。","復合":"此籤不涉復合，主的是眼前這段關係的溫度變化。","社群動態":"觀察對方是不是也沒空發限動，或只是沒空回你，答案差很多。","建議":"直接問比猜十次都準，忙不是不能解釋的理由。"}},{"n":18,"name":"已讀分析狂","fortune":"中","verse":"一個句點被你翻譯出五種意思\n標點符號比對方的心還難懂","explain":"此籤主過度揣測，心思紛亂反損判斷，宜停止過度解讀文字表象，回歸實際相處觀察真心。","punch":"你不是在等訊息，你是在自己開解謎大會。","detail":{"曖昧告白":"過度分析訊息只會製造更多焦慮，建議直接面對面確認心意。","穩定關係":"若在穩定關係中過度解讀，容易累積不必要的猜疑，建議坦誠溝通。","復合":"此籤不涉復合，眼前該處理的是自己的焦慮，不是對方的標點符號。","社群動態":"別再截圖傳給閨蜜逐字分析了，答案不在句點裡。","建議":"放下手機，約出來看眼神，比看訊息準確一百倍。"}},{"n":19,"name":"社群偵探","fortune":"中","verse":"手指划過前任的限動　划得比追劇還熟練\n你說只是隨便看看，划了四十分鐘","explain":"此籤主心猶未平，藉窺探他人動態填補內心空缺，然此舉徒增自擾，宜將心力轉回自身生活。","punch":"你查的不是他過得好不好，是你自己放下了沒。","detail":{"曖昧告白":"此籤不涉新曖昧，先處理完舊事再談新開始比較健康。","穩定關係":"若在穩定關係中仍忍不住觀察前任動態，建議誠實面對自己是否真的放下。","復合":"若心中仍有復合念頭，建議先想清楚是想念這個人，還是想念當時的自己。","社群動態":"忍不住看不代表還愛，但頻率太高就該問問自己在找什麼。","建議":"把划手機的時間拿去過自己的生活，答案自然會浮現。"}},{"n":20,"name":"平淡期警報","fortune":"中","verse":"約會變成外送到府　對話變成各自滑手機\n不是不愛了，是忘記怎麼經營了","explain":"此籤主感情漸趨平淡，然根基未失，宜及早正視警訊，重新投入心力，勿等問題累積成裂痕。","punch":"平淡不可怕，可怕的是兩個人都裝沒發現。","detail":{"曖昧告白":"此籤不涉曖昧，主的是穩定關係中該正視的警訊。","穩定關係":"建議主動安排新活動打破日常慣性，別讓平淡變成理所當然。","復合":"此籤不涉復合，眼前這段關係還有救，值得先努力。","社群動態":"你們最近的合照都是別人拍的嗎？該自己安排點什麼了。","建議":"找一件你們很久沒一起做的事，這週就去做。"}},{"n":21,"name":"誰先軟化","fortune":"中","verse":"冷戰第三天　兩人都在等對方先傳訊息\n手機打字打了又刪，比賽誰更會忍","explain":"此籤主僵持不下，雙方皆無過錯，唯自尊作祟，宜有一方先放下身段，情感方能回溫。","punch":"你們不是不愛了，是太愛面子了。","detail":{"曖昧告白":"此籤不涉曖昧，主的是穩定關係中的冷戰狀態。","穩定關係":"主動釋出善意的一方不是輸家，是更愛這段關係的人。","復合":"若冷戰導致分開，此籤主只要有人先低頭，復合機率不低。","社群動態":"別把冷戰的情緒發到限動上讓大家猜，直接找對方談。","建議":"先傳訊息的人不會比較沒面子，只會比較快好起來。"}},{"n":22,"name":"已讀空氣","fortune":"中下","verse":"訊息已讀不回　你連刪掉重打的勇氣都沒有\n這條線斷得悄無聲息","explain":"此籤主回應冷淡，情勢不明朗，宜靜心觀察，勿一再追問，徒增自身難堪。","punch":"已讀不回不是考驗，是答案，只是你還沒想聽。","detail":{"曖昧告白":"此刻不宜再主動告白，先給彼此一點空間觀察後續發展。","穩定關係":"若是穩定關係中出現這種情況，建議正式約時間談，而非用訊息猜。","復合":"此籤不主復合，對方目前的態度尚未明朗，不宜勉強推進。","社群動態":"他還在發限動卻不回你，這比已讀不回更說明狀態。","建議":"停止追加訊息，把心力留給會回應你的人。"}},{"n":23,"name":"單方面努力","fortune":"中下","verse":"約會你訂位　聊天你找話題　紀念日你記得\n這段關係好像只有你一個人在滑動","explain":"此籤主付出失衡，一方過勞一方冷漠，長此以往情將難久，宜重新檢視付出與回報是否對等。","punch":"感情不是接力賽，你不能一個人跑完全程。","detail":{"曖昧告白":"若曖昧中總是你單方面主動，先觀察對方是否也願意付出再決定要不要更進一步。","穩定關係":"建議坦誠溝通付出不對等的感受，別默默消耗到心累。","復合":"此籤不建議復合，過去的付出失衡若沒改善，重來也會是同樣的劇本。","社群動態":"你發的限動他很少回應，這也是一種付出不對等的訊號。","建議":"試著退後一步觀察，如果對方沒有主動靠近，別再一個人往前衝。"}},{"n":24,"name":"舊愛回頭","fortune":"中下","verse":"前任突然問你最近好嗎　語氣熟悉得像從沒分開過\n你分不清是想念，還是無聊","explain":"此籤主故人重返，動機難辨，宜謹慎應對，勿因一時懷舊而重蹈覆轍。","punch":"「最近好嗎」翻譯成人話通常是「我最近不太好」。","detail":{"曖昧告白":"此籤不建議急於重新曖昧，先觀察對方是真心還是一時寂寞。","穩定關係":"若你目前已有穩定對象，建議保持距離，勿讓舊人擾亂現在的關係。","復合":"復合前先誠實問自己，想念的是這個人，還是那段回憶。","社群動態":"深夜傳訊息問候，多半不是單純的關心，多留個心眼。","建議":"可以回覆，但別把回憶當成非回去不可的理由。"}},{"n":25,"name":"比較病發作","fortune":"中下","verse":"滑到前任曬新歡　默默點開自己跟他的合照\n這場比較賽，你早就選錯了對手","explain":"此籤主心生比較，徒增內耗，然此病根源在己非在人，宜將注意力收回自身，方能真正痊癒。","punch":"你在比較的不是誰更好，是自己有沒有真的走出來。","detail":{"曖昧告白":"帶著比較心態進入新關係容易不公平對待新對象，建議先整理好自己。","穩定關係":"若在穩定關係中仍拿對方跟前任比較，這對現任並不公平，建議停止。","復合":"此籤不主復合，你需要的是跟自己和解，不是跟過去糾纏。","社群動態":"卸載社群三天，你會發現世界比你想的安靜很多。","建議":"你早就贏了，只是還沒發現自己不需要再比賽。"}},{"n":26,"name":"慢熟預告","fortune":"小吉","verse":"這段緣分不是龜速　是他需要多一點時間確認\n好東西總是慢慢才端上桌","explain":"此籤主情勢緩進，然根基漸穩，凡事欲速則不達，宜耐心等待，時機一到自然水到渠成。","punch":"慢不是不愛，是他在確定不會搞砸。","detail":{"曖昧告白":"此刻告白時機未到，建議再給彼此多一點自然相處的時間。","穩定關係":"若關係進展緩慢，這是根基穩固的表現，不代表不用心。","復合":"此籤不主復合，主的是新緣分正在慢慢醞釀中。","社群動態":"對方不常按讚不代表沒關注，有些人習慣默默觀察。","建議":"別用別人的戀愛速度來衡量你們的節奏，你們有自己的時區。"}},{"n":27,"name":"觀察期","fortune":"小吉","verse":"還在互相試探底線　誰都不想先掀底牌\n這場拉鋸戰，比誰先眨眼還緊張","explain":"此籤主雙方仍在互相考察，未到定案之時，宜保持自然本色，勿刻意迎合而失了真實自己。","punch":"觀察期不是冷戰，是你們都還想確定值不值得。","detail":{"曖昧告白":"此刻建議繼續觀察，過早告白可能打斷正在建立的信任。","穩定關係":"此籤不涉穩定關係，主的是關係初期的試探階段。","復合":"此籤不主復合，主的是全新緣分的觀察期。","社群動態":"雙方都謹慎地互動，不是冷淡，是慎重。","建議":"做自己就好，不用演一個完美形象來通過這場考察。"}},{"n":28,"name":"重新出發","fortune":"小吉","verse":"上一段結束不久　你的心還在裝修中\n別急著開幕，先把地基打穩","explain":"此籤主休養生息之時，宜先安頓己心，未宜倉促投入新緣，待心緒平穩，好緣自來。","punch":"心還在裝修，別急著讓別人搬進來。","detail":{"曖昧告白":"此刻不建議急於發展新曖昧，先把自己照顧好比較重要。","穩定關係":"此籤與現有穩定關係無涉，主的是分手後的自我重建期。","復合":"此籤不主復合，也不建議急著找下一段來證明自己沒事。","社群動態":"少滑點交友軟體，多花時間跟自己相處，這階段最需要的是你自己。","建議":"給自己一點不談戀愛的時間，這不是浪費，是投資。"}},{"n":29,"name":"好人卡候補","fortune":"可","verse":"你以為的曖昧　是他以為的兄弟情\n「你人真的很好」這句話，你聽過三次了","explain":"此籤主單方傾心，情未對等，宜及早看清現實，勿再自我消耗於無回應之情。","punch":"「你人真的很好」是好人卡的標準開場白，別再自我催眠。","detail":{"曖昧告白":"此籤不建議告白，對方的訊號目前顯示是朋友定位，先冷靜觀察。","穩定關係":"此籤與穩定關係無涉，主的是單方面的錯付心意。","復合":"此籤不涉復合，你要放下的不是這段感情，是這個不對等的期待。","社群動態":"他把你的限動當成日常閒聊，不是曖昧信號，是真的把你當朋友。","建議":"把這份心力收回來，留給願意對等回應你的人。"}},{"n":30,"name":"各自堅持","fortune":"可","verse":"你等他先道歉　他等你先服軟\n這場僵局，輸的人是拖最久的那個","explain":"此籤主雙方各執己見，僵持不下，然久拖無益，宜有一方先放下面子，方能解此困局。","punch":"你們不是感情變淡，是誰都不想先低頭而已。","detail":{"曖昧告白":"此籤不涉曖昧，主的是關係中僵持不下的溝通問題。","穩定關係":"建議先放下「誰先低頭」的計較，關係比面子重要。","復合":"若因僵持而分開，此籤主只要一方願意先軟化，仍有復合機會。","社群動態":"別在社群上放酸言酸語互相較勁，那只會讓和解更難。","建議":"先開口的人不是輸家，拖最久的才是真正的輸家。"}},{"n":31,"name":"海市蜃樓","fortune":"下下","verse":"遠看情深似海　靠近全是空氣\n你愛的其實是想像中的他","explain":"此籤主虛幻不實，眼前之情如蜃景，觸不可及。求問者宜認清現實，勿因一時光影而耗費真心，凶多吉少，宜早收心。","punch":"醒醒，你談的不是戀愛，是單人劇場。","detail":{"曖昧告白":"此刻不宜告白，你需要先確認對方的溫度是真的還是你腦補的。","穩定關係":"此籤不涉穩定關係，主的是一段建立在想像上的單向感情。","復合":"此籤不主復合，過去的美好可能也是你濾鏡加太重的結果。","社群動態":"他發限動不是暗示你，只是剛好你在看。","建議":"把這股熱情省下來，留給真的看得到你的人。"}},{"n":32,"name":"已讀已刪","fortune":"下下","verse":"你還在等一個解釋　他早就把對話設為已讀不重要\n這段關係已讀，但從沒被在乎過","explain":"此籤主情已淡薄，對方心思他移，凡強求者徒增傷痛，宜認清現況，及早抽身，方能保全自身元氣。","punch":"他不是忙，是你已經被排到待辦事項的最後一頁。","detail":{"曖昧告白":"此刻不宜再告白，對方的態度已經給了明確答案，只是你還沒接受。","穩定關係":"此籤不涉穩定關係，主的是一段已經名存實亡的連結。","復合":"此籤不主復合，這段關係需要的不是挽回，是好好道別。","社群動態":"他已經不看你的限動很久了，這件事你其實早就知道。","建議":"停止等一個不會來的解釋，你的時間值得放在別的地方。"}}];
 
 const CLAP = {
-  minGap: 150,
-  maxGap: 700,
-  debounce: 110
+  minGap: 120,
+  maxGap: 900,
+  refractory: 90
 };
 
 const TABS = [
@@ -694,8 +726,10 @@ const TONG_SVG = `
       <rect x="-4" y="0" width="8" height="104" rx="4" fill="#fff"/>
     </g>
     <g class="stick stick-drawn" transform="translate(122 0)">
-      <rect x="-4.5" y="0" width="9" height="118" rx="4.5" fill="#fff"/>
-      <circle cx="0" cy="4" r="3.2" fill="#FF828C"/>
+      <g class="stick-rise">
+        <rect x="-4.5" y="0" width="9" height="118" rx="4.5" fill="#fff"/>
+        <circle cx="0" cy="4" r="3.2" fill="#FF828C"/>
+      </g>
     </g>
     <g class="stick" transform="translate(140 10) rotate(6)">
       <rect x="-4" y="0" width="8" height="100" rx="4" fill="#fff" opacity="0.95"/>
@@ -729,18 +763,155 @@ const TONG_SVG = `
   <path d="M62 230 H178" stroke="#fff" stroke-width="1.4" opacity="0.45"/>
 </svg>`;
 
+/* ==CLAP_DETECT== */
+/* 良緣社拍手偵測核心：瀏覽器與 Node 離線測試共用 */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.LiangyuanClap = factory();
+})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  "use strict";
+
+  function clamp(n, a, b) {
+    return Math.max(a, Math.min(b, n));
+  }
+
+  function paramsFromSensitivity(sens) {
+    const t = clamp((Number(sens) || 80) / 100, 0, 1);
+    return {
+      k: 4.5 - t * 2.1,           // 4.5 … 2.4
+      minAbs: 0.12 - t * 0.08,    // 0.12 … 0.04
+      onsetRatio: 2.5 - t * 0.7   // 2.5 … 1.8
+    };
+  }
+
+  function createDetector(opts) {
+    const o = Object.assign({
+      sensitivity: 80,
+      minGap: 120,
+      maxGap: 900,
+      refractory: 90,
+      floorMin: 0.0025,
+      floorMax: 0.22,
+      floorUp: 0.004,
+      floorDown: 0.10
+    }, opts || {});
+
+    const st = {
+      floor: 0.01,
+      prevEnergy: 0,
+      cooldownUntil: 0,
+      energy: 0,
+      thresh: 0,
+      jump: 0
+    };
+
+    function setSensitivity(v) {
+      o.sensitivity = Number(v);
+    }
+
+    function ingest(peak, rms, now) {
+      const p = paramsFromSensitivity(o.sensitivity);
+      const energy = Math.max(Number(peak) || 0, (Number(rms) || 0) * 2);
+      const quiet = energy < st.floor * 1.7;
+      const alpha = quiet ? o.floorDown : o.floorUp;
+      const floorSample = Math.min((Number(rms) || 0) * 1.3, energy);
+      st.floor = clamp(st.floor + (floorSample - st.floor) * alpha, o.floorMin, o.floorMax);
+
+      const thresh = Math.max(st.floor * p.k, p.minAbs);
+      const denom = Math.max(st.prevEnergy, st.floor, 1e-4);
+      const jump = energy / denom;
+      const isOnset = energy > thresh && jump >= p.onsetRatio;
+      let clap = false;
+      if (isOnset && now >= st.cooldownUntil) {
+        clap = true;
+        st.cooldownUntil = now + o.refractory;
+      }
+      st.prevEnergy = Math.max(energy, st.prevEnergy * 0.62);
+      st.energy = energy;
+      st.thresh = thresh;
+      st.jump = jump;
+      return { clap: clap, energy: energy, thresh: thresh, floor: st.floor, jump: jump };
+    }
+
+    function resetFloor(value) {
+      st.floor = clamp(value == null ? 0.01 : value, o.floorMin, o.floorMax);
+      st.prevEnergy = 0;
+      st.cooldownUntil = 0;
+    }
+
+    return {
+      ingest: ingest,
+      setSensitivity: setSensitivity,
+      resetFloor: resetFloor,
+      state: st,
+      opts: o,
+      paramsFromSensitivity: paramsFromSensitivity
+    };
+  }
+
+  function createPairTracker(opts) {
+    const o = Object.assign({ minGap: 120, maxGap: 900 }, opts || {});
+    const st = { count: 0, firstAt: 0 };
+
+    function reset() {
+      st.count = 0;
+      st.firstAt = 0;
+    }
+
+    function feed(now) {
+      if (st.count === 0) {
+        st.count = 1;
+        st.firstAt = now;
+        return { event: "first", gap: 0, count: 1 };
+      }
+      const gap = now - st.firstAt;
+      if (gap < o.minGap) return { event: "ignore", gap: gap, count: st.count };
+      if (gap > o.maxGap) {
+        st.count = 1;
+        st.firstAt = now;
+        return { event: "restart", gap: gap, count: 1 };
+      }
+      st.count = 2;
+      return { event: "pair", gap: gap, count: 2 };
+    }
+
+    function tick(now) {
+      if (st.count === 1 && now - st.firstAt > o.maxGap) {
+        reset();
+        return { event: "timeout" };
+      }
+      return null;
+    }
+
+    return { feed: feed, tick: tick, reset: reset, state: st, opts: o };
+  }
+
+  return {
+    createDetector: createDetector,
+    createPairTracker: createPairTracker,
+    paramsFromSensitivity: paramsFromSensitivity
+  };
+});
+/* ==/CLAP_DETECT== */
+
 /* ---------- state ---------- */
 const state = {
-  screen: "home",
+  screen: "oracle",
   stream: null,
   audioCtx: null,
   analyser: null,
   source: null,
   filter: null,
+  proc: null,
+  worklet: null,
+  mute: null,
+  hopTimer: 0,
   raf: 0,
   td: null,
   fd: null,
-  sensitivity: 60,
+  detector: null,
+  pair: null,
+  sensitivity: 80,
   clapCount: 0,
   firstClapAt: 0,
   cooldownUntil: 0,
@@ -748,7 +919,8 @@ const state = {
   noiseFloor: 0.02,
   currentLot: null,
   activeTab: "曖昧告白",
-  drawing: false
+  drawing: false,
+  debug: false
 };
 
 const $ = (id) => document.getElementById(id);
@@ -764,14 +936,24 @@ function showToast(msg) {
 
 function applyOracleMode(mode) {
   document.body.dataset.oracle = mode;
-  const awaitBox = $("oracle-await");
-  const listenBox = $("oracle-listen");
-  const deniedBox = $("denied-box");
-  const drawBox = $("oracle-draw");
-  if (awaitBox) awaitBox.hidden = mode !== "await";
-  if (listenBox) listenBox.hidden = mode !== "listening";
-  if (deniedBox) deniedBox.hidden = mode !== "denied";
-  if (drawBox) drawBox.hidden = mode !== "draw";
+  const retry = $("btn-retry-mic");
+  if (retry) retry.hidden = mode !== "denied";
+  const tong = $("tong");
+  if (tong && mode !== "draw") {
+    tong.classList.remove("shaking", "rising", "shot-mid");
+    if (!tong.classList.contains("nudge")) tong.classList.add("idle");
+  }
+  if (mode === "await") setHint("輕觸籤筒開始", "輕觸籤筒開始");
+  else if (mode === "listening") setHint("靠近手機，拍兩下手", "請拍手兩聲許願");
+  else if (mode === "denied") setHint("無法使用麥克風，請輕觸籤筒兩次", "輕觸籤筒兩次抽籤");
+  else if (mode === "draw") setHint("求籤中", "求籤中");
+}
+
+function setHint(text, aria) {
+  const el = $("oracle-hint");
+  if (el) el.textContent = text;
+  const tong = $("tong");
+  if (tong && aria) tong.setAttribute("aria-label", aria);
 }
 
 function showScreen(name) {
@@ -809,6 +991,10 @@ function parseQuery() {
   return n;
 }
 
+function isDebugQuery() {
+  return new URLSearchParams(location.search).get("debug") === "1";
+}
+
 function lotByN(n) {
   return LOTS.find((l) => l.n === n) || null;
 }
@@ -827,10 +1013,33 @@ function randomLot(exceptN) {
 
 /* ---------- 籤筒 ---------- */
 function mountTong() {
-  ["tong-listen", "tong-draw"].forEach((id) => {
-    const el = $(id);
-    if (el && !el.querySelector("svg")) el.innerHTML = TONG_SVG;
-  });
+  const el = $("tong");
+  if (el && !el.querySelector("svg")) el.innerHTML = TONG_SVG;
+}
+
+function poseTong(pose) {
+  const tong = $("tong");
+  if (!tong) return;
+  tong.classList.remove("idle", "nudge", "shaking", "rising", "shot-mid");
+  if (pose === "home") tong.classList.add("idle");
+  else if (pose === "nudge") tong.classList.add("nudge");
+  else if (pose === "shake") tong.classList.add("shaking", "rising", "shot-mid");
+}
+
+function nudgeTong() {
+  const tong = $("tong");
+  if (!tong) return;
+  tong.classList.remove("idle", "nudge");
+  void tong.offsetWidth;
+  tong.classList.add("nudge");
+  clearTimeout(nudgeTong._t);
+  nudgeTong._t = setTimeout(() => {
+    if (state.drawing) return;
+    const mode = document.body.dataset.oracle;
+    if (mode === "draw") return;
+    tong.classList.remove("nudge");
+    tong.classList.add("idle");
+  }, 450);
 }
 
 /* ---------- 音效 ---------- */
@@ -923,109 +1132,124 @@ function buzz(pattern) {
 }
 
 /* ---------- 拍手偵測 ---------- */
-function thresholdFromSlider(v) {
-  // 0（低靈敏／現場吵）→ 較高門檻；100（高靈敏）→ 較低門檻
-  return 0.70 - (v / 100) * 0.42; // 0.70 … 0.28
+function newDetector() {
+  const api = window.LiangyuanClap;
+  state.detector = api.createDetector({
+    sensitivity: state.sensitivity,
+    minGap: CLAP.minGap,
+    maxGap: CLAP.maxGap,
+    refractory: CLAP.refractory
+  });
+  state.pair = api.createPairTracker({ minGap: CLAP.minGap, maxGap: CLAP.maxGap });
 }
 
 function updateThresholdMark() {
-  const t = thresholdFromSlider(state.sensitivity);
-  $("meter-threshold").style.left = Math.min(96, Math.max(8, t * 100)) + "%";
+  if (!state.debug) return;
+  const api = window.LiangyuanClap;
+  if (!api) return;
+  const p = api.paramsFromSensitivity(state.sensitivity);
+  const floor = (state.detector && state.detector.state.floor) || 0.01;
+  const thresh = Math.max(floor * p.k, p.minAbs);
+  const mark = $("meter-threshold");
+  if (mark) mark.style.left = Math.min(96, Math.max(2, thresh * 100)) + "%";
+}
+
+function updateDebugMeter(r) {
+  if (!state.debug || !r) return;
+  const fill = $("meter-fill");
+  const mark = $("meter-threshold");
+  const live = $("debug-live");
+  if (fill) fill.style.width = Math.min(100, r.energy * 140).toFixed(1) + "%";
+  if (mark) mark.style.left = Math.min(96, Math.max(2, r.thresh * 140)) + "%";
+  if (live) {
+    const n = state.pair ? state.pair.state.count : 0;
+    live.textContent = "lvl " + r.energy.toFixed(3) +
+      "  thr " + r.thresh.toFixed(3) +
+      "  floor " + r.floor.toFixed(3) +
+      "  jump " + r.jump.toFixed(2) +
+      "  claps " + n;
+  }
+}
+
+function setClapDots(n) {
+  const a = $("clap-1");
+  const b = $("clap-2");
+  if (a) a.classList.toggle("on", n >= 1);
+  if (b) b.classList.toggle("on", n >= 2);
 }
 
 function resetClaps() {
   state.clapCount = 0;
   state.firstClapAt = 0;
-  $("clap-1").classList.remove("on");
-  $("clap-2").classList.remove("on");
-  if ($("listen-status")) $("listen-status").textContent = "靠近手機，拍兩下手";
+  if (state.pair) state.pair.reset();
+  setClapDots(0);
+}
+
+function canAcceptClap() {
+  if (state.drawing || state.screen !== "oracle") return false;
+  const mode = document.body.dataset.oracle;
+  return mode === "listening" || mode === "denied";
 }
 
 function registerClap(now) {
-  if (state.drawing || state.screen !== "listen") return;
-  if (state.clapCount === 0) {
+  if (!canAcceptClap()) return;
+  if (!state.pair) newDetector();
+  const ev = state.pair.feed(now);
+  if (ev.event === "ignore") return;
+  const denied = document.body.dataset.oracle === "denied";
+  if (ev.event === "first" || ev.event === "restart") {
     state.clapCount = 1;
     state.firstClapAt = now;
-    $("clap-1").classList.add("on");
-    $("clap-2").classList.remove("on");
-    $("listen-status").textContent = "再拍第二聲";
-    playTick();
+    setClapDots(1);
+    nudgeTong();
+    if (ev.event === "restart") {
+      setHint(denied ? "間隔太久了，再輕觸兩次" : "間隔太久了，再拍兩聲");
+    } else {
+      setHint(denied ? "再輕觸一次" : "再拍第二聲");
+    }
     buzz(40);
     return;
   }
-  const gap = now - state.firstClapAt;
-  if (gap < CLAP.minGap) return;
-  if (gap > CLAP.maxGap) {
-    state.clapCount = 1;
-    state.firstClapAt = now;
-    $("clap-1").classList.add("on");
-    $("clap-2").classList.remove("on");
-    $("listen-status").textContent = "間隔太久了，再拍兩聲";
-    playTick();
-    buzz(40);
-    return;
+  if (ev.event === "pair") {
+    state.clapCount = 2;
+    setClapDots(2);
+    setHint("緣來了");
+    buzz([40, 50, 80]);
+    const except = state.currentLot && state.currentLot.n;
+    beginDraw(randomLot(except));
   }
-  state.clapCount = 2;
-  $("clap-2").classList.add("on");
-  $("listen-status").textContent = "緣來了";
-  playTick();
-  buzz([40, 50, 80]);
-  const except = state.currentLot && state.currentLot.n;
-  beginDraw(randomLot(except));
+}
+
+function onHop(peak, rms) {
+  if (!state.detector || state.drawing) return;
+  if (document.body.dataset.oracle !== "listening") return;
+  const now = performance.now();
+  const r = state.detector.ingest(peak, rms, now);
+  updateDebugMeter(r);
+  if (r.clap) registerClap(now);
+  if (state.pair) {
+    const to = state.pair.tick(now);
+    if (to && to.event === "timeout") {
+      resetClaps();
+      setHint("再拍兩聲許願");
+    }
+  }
 }
 
 function onFrame() {
   if (!state.analyser) return;
   state.analyser.getByteTimeDomainData(state.td);
-  state.analyser.getByteFrequencyData(state.fd);
-
+  const td = state.td;
   let sum = 0;
   let peak = 0;
-  const td = state.td;
   for (let i = 0; i < td.length; i++) {
     const v = (td[i] - 128) / 128;
+    const a = v < 0 ? -v : v;
+    if (a > peak) peak = a;
     sum += v * v;
-    if (v > peak || -v > peak) peak = Math.abs(v);
   }
   const rms = Math.sqrt(sum / td.length);
-
-  const fd = state.fd;
-  let high = 0;
-  const start = 46; // ~2kHz at 44.1kHz / fft 1024
-  for (let i = start; i < fd.length; i++) high += fd[i];
-  high = high / (fd.length - start) / 255;
-
-  const level = Math.min(1, Math.max(peak, rms * 2.2));
-  $("meter-fill").style.width = (level * 100).toFixed(1) + "%";
-
-  // 慢速追蹤環境底噪，現場有音樂時可略為抬高門檻
-  const env = Math.min(peak, rms * 2);
-  state.noiseFloor = state.noiseFloor * 0.992 + env * 0.008;
-
-  const thresh = thresholdFromSlider(state.sensitivity) + state.noiseFloor * 0.55;
-  const now = performance.now();
-  if (!state.peakHist) state.peakHist = [];
-  const hist = state.peakHist;
-  const recentAvg = hist.length ? hist.reduce((a, b) => a + b, 0) / hist.length : 0;
-  hist.push(peak);
-  if (hist.length > 10) hist.shift();
-  const rising = peak > state.lastPeak * 1.32;
-  const contrast = peak > recentAvg * 1.85 + 0.05;
-  const isOnset = peak > thresh && rising && contrast && high > thresh * 0.28 && peak > 0.22;
-
-  if (isOnset && now >= state.cooldownUntil) {
-    registerClap(now);
-    state.cooldownUntil = now + CLAP.debounce;
-  }
-
-  // 第一聲逾時未接第二聲，重置
-  if (state.clapCount === 1 && now - state.firstClapAt > CLAP.maxGap + 80) {
-    resetClaps();
-    if ($("listen-status")) $("listen-status").textContent = "再拍兩聲許願";
-  }
-
-  state.lastPeak = peak * 0.55 + state.lastPeak * 0.45;
-  state.raf = requestAnimationFrame(onFrame);
+  onHop(peak, rms);
 }
 
 function stopMicLoop() {
@@ -1033,18 +1257,101 @@ function stopMicLoop() {
     cancelAnimationFrame(state.raf);
     state.raf = 0;
   }
+  if (state.hopTimer) {
+    clearInterval(state.hopTimer);
+    state.hopTimer = 0;
+  }
 }
 
 function detachMic() {
   stopMicLoop();
-  try { if (state.source) state.source.disconnect(); } catch (e) {}
-  try { if (state.filter) state.filter.disconnect(); } catch (e) {}
-  try { if (state.analyser) state.analyser.disconnect(); } catch (e) {}
-  state.source = state.filter = state.analyser = null;
+  try { if (state.worklet && state.worklet.port) state.worklet.port.onmessage = null; } catch (e) {}
+  try { if (state.proc) state.proc.onaudioprocess = null; } catch (e) {}
+  ["source", "filter", "proc", "worklet", "analyser", "mute"].forEach((k) => {
+    try { if (state[k]) state[k].disconnect(); } catch (e) {}
+    state[k] = null;
+  });
   if (state.stream) {
-    state.stream.getTracks().forEach((t) => t.stop());
+    state.stream.getTracks().forEach((tr) => tr.stop());
     state.stream = null;
   }
+}
+
+const WORKLET_SRC = [
+  "class LiangyuanClapProcessor extends AudioWorkletProcessor {",
+  "  constructor() { super(); this._peak = 0; this._sum = 0; this._n = 0; this._target = 256; }",
+  "  process(inputs) {",
+  "    const ch = inputs[0] && inputs[0][0];",
+  "    if (ch) {",
+  "      for (let i = 0; i < ch.length; i++) {",
+  "        const v = ch[i];",
+  "        const a = v < 0 ? -v : v;",
+  "        if (a > this._peak) this._peak = a;",
+  "        this._sum += v * v;",
+  "        this._n++;",
+  "      }",
+  "      if (this._n >= this._target) {",
+  "        this.port.postMessage({ peak: this._peak, rms: Math.sqrt(this._sum / this._n) });",
+  "        this._peak = 0; this._sum = 0; this._n = 0;",
+  "      }",
+  "    }",
+  "    return true;",
+  "  }",
+  "}",
+  "registerProcessor('liangyuan-clap', LiangyuanClapProcessor);"
+].join("\\n");
+
+async function attachHopProcessor(ctx, filter) {
+  const mute = ctx.createGain();
+  mute.gain.value = 0;
+  state.mute = mute;
+  if (ctx.audioWorklet && ctx.audioWorklet.addModule) {
+    try {
+      const blob = new Blob([WORKLET_SRC.replace(/\\\\n/g, "\\n")], { type: "text/javascript" });
+      const url = URL.createObjectURL(blob);
+      try {
+        await ctx.audioWorklet.addModule(url);
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+      const node = new AudioWorkletNode(ctx, "liangyuan-clap");
+      node.port.onmessage = (ev) => onHop(ev.data.peak, ev.data.rms);
+      filter.connect(node);
+      node.connect(mute);
+      mute.connect(ctx.destination);
+      state.worklet = node;
+      return "worklet";
+    } catch (err) { /* fall through to ScriptProcessor */ }
+  }
+  const AC = ctx.constructor;
+  if (typeof ctx.createScriptProcessor === "function" || typeof ctx.createJavaScriptNode === "function") {
+    const proc = (ctx.createScriptProcessor || ctx.createJavaScriptNode).call(ctx, 512, 1, 1);
+    proc.onaudioprocess = (ev) => {
+      const input = ev.inputBuffer.getChannelData(0);
+      let peak = 0, sum = 0;
+      for (let i = 0; i < input.length; i++) {
+        const v = input[i];
+        const a = v < 0 ? -v : v;
+        if (a > peak) peak = a;
+        sum += v * v;
+      }
+      onHop(peak, Math.sqrt(sum / input.length));
+    };
+    filter.connect(proc);
+    proc.connect(mute);
+    mute.connect(ctx.destination);
+    state.proc = proc;
+    return "script";
+  }
+  const analyser = ctx.createAnalyser();
+  analyser.fftSize = 1024;
+  analyser.smoothingTimeConstant = 0;
+  filter.connect(analyser);
+  state.analyser = analyser;
+  state.td = new Uint8Array(analyser.fftSize);
+  stopMicLoop();
+  state.hopTimer = setInterval(onFrame, 8);
+  return "analyser";
 }
 
 async function startMic() {
@@ -1055,58 +1362,86 @@ async function startMic() {
     throw new Error("unsupported");
   }
   await resumeAudio();
-  const stream = await navigator.mediaDevices.getUserMedia({
+  const constraints = {
     audio: {
       echoCancellation: false,
       noiseSuppression: false,
       autoGainControl: false,
       channelCount: 1
     }
-  });
-  const ctx = getAudioCtx();
+  };
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
+  } catch (err) {
+    if (err && err.name === "NotAllowedError") throw err;
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  }
+  detachMic();
+  const ctx = await resumeAudio();
+  if (!ctx) throw new Error("unsupported");
   const source = ctx.createMediaStreamSource(stream);
   const filter = ctx.createBiquadFilter();
   filter.type = "highpass";
   filter.frequency.value = 1500;
   filter.Q.value = 0.7;
-  const analyser = ctx.createAnalyser();
-  analyser.fftSize = 1024;
-  analyser.smoothingTimeConstant = 0.15;
   source.connect(filter);
-  filter.connect(analyser);
 
   state.stream = stream;
   state.source = source;
   state.filter = filter;
-  state.analyser = analyser;
-  state.td = new Uint8Array(analyser.fftSize);
-  state.fd = new Uint8Array(analyser.frequencyBinCount);
-  state.lastPeak = 0;
-  state.noiseFloor = 0.02;
-  state.cooldownUntil = performance.now() + 180;
+  newDetector();
+  state.detector.resetFloor(0.01);
+  state.cooldownUntil = performance.now() + 250;
+  if (state.detector) state.detector.state.cooldownUntil = state.cooldownUntil;
   resetClaps();
   updateThresholdMark();
+  await attachHopProcessor(ctx, filter);
+}
+
+function detachMicKeepStream() {
   stopMicLoop();
-  state.raf = requestAnimationFrame(onFrame);
+  try { if (state.worklet && state.worklet.port) state.worklet.port.onmessage = null; } catch (e) {}
+  try { if (state.proc) state.proc.onaudioprocess = null; } catch (e) {}
+  ["source", "filter", "proc", "worklet", "analyser", "mute"].forEach((k) => {
+    try { if (state[k]) state[k].disconnect(); } catch (e) {}
+    state[k] = null;
+  });
 }
 
 async function onStartWish() {
   try {
+    await resumeAudio();
     await startMic();
     showScreen("listen");
   } catch (err) {
     detachMic();
     const text = $("denied-text");
-    if (err && err.name === "NotAllowedError") {
-      text.textContent = "沒有麥克風權限，改以輕觸抽籤也可以許願。";
-    } else if (err && (err.message === "insecure")) {
-      text.textContent = "麥克風需要在 HTTPS 安全連線下才能開啟，先改用輕觸抽籤。";
-    } else if (err && (err.name === "NotFoundError" || err.message === "unsupported")) {
-      text.textContent = "這台裝置沒有可用的麥克風，改以輕觸抽籤。";
-    } else {
-      text.textContent = "無法使用麥克風時，也可以輕觸抽籤。";
-    }
+    const hint = (err && err.name === "NotAllowedError")
+      ? "沒有麥克風權限，請輕觸籤筒兩次抽籤。"
+      : (err && err.message === "insecure")
+      ? "麥克風需要在 HTTPS 安全連線下才能開啟，請輕觸籤筒兩次抽籤。"
+      : (err && (err.name === "NotFoundError" || err.message === "unsupported"))
+      ? "這台裝置沒有可用的麥克風，請輕觸籤筒兩次抽籤。"
+      : "無法使用麥克風，請輕觸籤筒兩次抽籤。";
+    if (text) text.textContent = hint;
     showScreen("denied");
+    setHint(hint, "輕觸籤筒兩次抽籤");
+  }
+}
+
+function onOracleActivate(ev) {
+  if (state.screen !== "oracle" || state.drawing) return;
+  if (ev.target.closest && (ev.target.closest("#btn-retry-mic") || ev.target.closest("#debug-panel"))) return;
+  const mode = document.body.dataset.oracle;
+  if (mode === "await") {
+    ev.preventDefault();
+    onStartWish();
+  } else if (mode === "denied") {
+    ev.preventDefault();
+    registerClap(performance.now());
+  } else if (mode === "listening") {
+    resumeAudio();
   }
 }
 
@@ -1120,20 +1455,29 @@ function beginDraw(lot) {
   state.drawing = true;
   state.currentLot = lot;
   detachMic();
-  $("draw-status").textContent = "求籤中";
   showScreen("draw");
+  const tong = $("tong");
+  if (tong) {
+    tong.classList.remove("idle", "nudge", "shot-mid");
+    tong.classList.add("shaking");
+  }
   playRattle();
 
-  const shakeMs = reducedMotion() ? 200 : 800;
-  const holdMs = reducedMotion() ? 80 : 400;
+  const shakeMs = reducedMotion() ? 200 : 700;
+  const holdMs = reducedMotion() ? 80 : 450;
   setTimeout(() => {
-    $("draw-status").textContent = "籤出";
+    if (tong) tong.classList.add("rising");
+    setHint("籤出");
+  }, reducedMotion() ? 40 : 180);
+  setTimeout(() => {
+    if (tong) tong.classList.remove("shaking");
   }, shakeMs);
   setTimeout(() => {
     playReveal();
     buzz([20, 40, 20, 40, 120]);
     revealLot(lot, { replaceUrl: false });
     state.drawing = false;
+    if (tong) tong.classList.remove("rising", "shaking", "shot-mid");
   }, shakeMs + holdMs);
 }
 
@@ -1242,7 +1586,9 @@ function goHomeForNewDraw() {
   url.searchParams.delete("n");
   history.replaceState({}, "", url);
   resetClaps();
+  poseTong("home");
   showScreen("oracle");
+  tryAutoStartMic();
 }
 
 /* ---------- 分享圖卡 ---------- */
@@ -1408,6 +1754,14 @@ function bindLookup(formId, inputId, msgId) {
 
 function init() {
   mountTong();
+  newDetector();
+  state.debug = isDebugQuery();
+  if (state.debug) {
+    document.body.dataset.debug = "1";
+    const panel = $("debug-panel");
+    if (panel) panel.hidden = false;
+  }
+
   document.querySelectorAll(".tab").forEach((btn) => {
     btn.setAttribute("aria-label", ({
       "曖昧告白": "問曖昧告白",
@@ -1419,18 +1773,22 @@ function init() {
     btn.addEventListener("click", () => setTab(btn.dataset.tab));
   });
 
-  $("btn-start").addEventListener("click", onStartWish);
-  $("btn-retry-mic").addEventListener("click", onStartWish);
-  $("btn-tap-draw").addEventListener("click", () => beginDraw(randomLot()));
-  $("btn-fallback-listen").addEventListener("click", () => beginDraw(randomLot(state.currentLot && state.currentLot.n)));
+  const oracle = $("screen-oracle");
+  if (oracle) oracle.addEventListener("click", onOracleActivate);
+  const retry = $("btn-retry-mic");
+  if (retry) retry.addEventListener("click", (e) => { e.stopPropagation(); onStartWish(); });
   $("btn-again").addEventListener("click", goHomeForNewDraw);
   $("btn-share").addEventListener("click", shareLot);
 
-  $("sensitivity").addEventListener("input", (e) => {
-    state.sensitivity = Number(e.target.value);
-    updateThresholdMark();
-  });
-  updateThresholdMark();
+  const sens = $("sensitivity");
+  if (sens) {
+    sens.value = String(state.sensitivity);
+    sens.addEventListener("input", (e) => {
+      state.sensitivity = Number(e.target.value);
+      if (state.detector) state.detector.setSensitivity(state.sensitivity);
+      updateThresholdMark();
+    });
+  }
 
   const n = parseQuery();
   if (n) {
@@ -1465,6 +1823,9 @@ window.__liangyuan = {
   showScreen,
   renderShareCard,
   shareLot,
+  poseTong,
+  nudgeTong,
+  mountTong,
   get state() { return state; },
   LOTS
 };
