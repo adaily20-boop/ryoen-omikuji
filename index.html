@@ -51,10 +51,8 @@ body {
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
-body[data-screen="home"] { overflow: hidden; height: 100vh; height: 100dvh; }
-body[data-screen="listen"],
-body[data-screen="draw"],
-body[data-screen="denied"] { overflow-x: hidden; overflow-y: auto; height: 100vh; height: 100dvh; }
+body[data-screen="oracle"] { overflow: hidden; height: 100vh; height: 100dvh; }
+body[data-screen="result"] { overflow-x: hidden; overflow-y: auto; }
 button, input { font-family: inherit; color: inherit; }
 button { cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 button:disabled { opacity: 0.5; cursor: default; }
@@ -90,23 +88,26 @@ h1, h2, p, blockquote { margin: 0; }
   pointer-events: none;
   transition: width 0.45s ease, margin 0.45s ease;
 }
-body:not([data-screen="home"]) #site-logo {
+body[data-screen="result"] #site-logo {
   width: min(36vw, 152px);
   margin-top: -4px;
   margin-bottom: -6px;
 }
 @media (max-height: 720px) {
-  body[data-screen="home"] #site-logo { width: min(58vw, 236px); }
+  body[data-screen="oracle"] #site-logo { width: min(58vw, 236px); }
 }
 @media (max-height: 620px) {
-  body[data-screen="home"] #site-logo { width: min(48vw, 196px); }
+  body[data-screen="oracle"] #site-logo { width: min(48vw, 196px); }
 }
 
 main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: column; }
 .screen { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; }
 
 /* ===== HOME ===== */
-#screen-home { justify-content: flex-start; text-align: center; padding-bottom: calc(24px + var(--safe-b)); }
+#screen-oracle { justify-content: flex-start; text-align: center; padding-bottom: calc(24px + var(--safe-b)); }
+.oracle-await { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.oracle-listen, .oracle-draw { width: 100%; display: flex; flex-direction: column; align-items: center; }
+#screen-oracle .fine { margin-top: auto; }
 .prompt {
   font-family: var(--font-serif);
   font-size: clamp(20px, 5.5vw, 26px);
@@ -333,9 +334,10 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
 /* ===== RESULT ===== */
 #screen-result {
   align-items: stretch;
-  padding-bottom: calc(32px + var(--safe-b));
+  padding-bottom: calc(8px + var(--safe-b));
 }
 .result-inner { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.result-fine { margin-top: 24px; }
 .lot-meta {
   display: flex;
   align-items: center;
@@ -426,9 +428,9 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
   border: 0;
   border-bottom: 2px solid transparent;
   color: var(--white-64);
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  padding: 10px 9px 8px;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  padding: 10px 6px 8px;
   margin-bottom: -1px;
   white-space: nowrap;
   font-weight: 500;
@@ -528,20 +530,20 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
 }
 
 @media (max-height: 740px) {
-  body:not([data-screen="home"]) #site-logo { width: min(28vw, 112px); margin-top: -8px; margin-bottom: -10px; }
-  .tong-wrap { width: min(48vw, 200px); margin-bottom: 0; }
-  #screen-listen .prompt { font-size: 20px; margin-top: 0; margin-bottom: 2px; }
+  body[data-screen="result"] #site-logo { width: min(28vw, 112px); margin-top: -8px; margin-bottom: -10px; }
+  body[data-screen="oracle"] #site-logo { width: min(58vw, 236px); }
+  #screen-oracle .prompt { font-size: 20px; margin-top: 0; margin-bottom: 18px; }
   .clap-orb { width: 48px; height: 48px; }
   .clap-row { margin-bottom: 10px; }
 }
 @media (max-height: 640px) {
-  .tong-wrap { width: min(40vw, 168px); }
-  #screen-listen .prompt { display: none; }
+  body[data-screen="oracle"] #site-logo { width: min(48vw, 196px); }
 }
 
   </style>
 </head>
-<body data-screen="home">
+<body data-screen="oracle" data-oracle="await">
+
 <div id="app">
   <header id="brand">
     <!-- 【LOGO】更換品牌標誌：把檔案放到同資料夾，只改下一行的 src（logo.png 或 logo.svg 皆可）。分享圖卡會自動使用同一份。 -->
@@ -549,73 +551,52 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
   </header>
 
   <main>
-    <section id="screen-home" class="screen" aria-label="首頁">
+    <section id="screen-oracle" class="screen" aria-label="求籤">
       <h1 class="prompt">請拍手兩聲許願</h1>
-      <div class="home-cta">
-        <button type="button" class="btn btn-primary" id="btn-start">開始許願</button>
-      </div>
-      <form class="lookup" id="lookup-form" autocomplete="off">
-        <label class="lookup-label" for="lot-input">我手上有籤　輸入籤序</label>
-        <div class="lookup-row">
-          <input id="lot-input" name="n" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" placeholder="1–32" aria-label="籤序 1 到 32">
-          <button type="submit" class="btn btn-ghost">查看</button>
-        </div>
-        <p class="lookup-msg" id="lookup-msg" role="status"></p>
-      </form>
-      <p class="fine">良緣社　本頁不蒐集任何資料</p>
-    </section>
 
-    <section id="screen-listen" class="screen" hidden aria-label="拍手感應">
-      <h1 class="prompt">請拍手兩聲許願</h1>
-      <div class="tong-wrap idle" id="tong-listen" aria-hidden="true"></div>
-      <p class="status-line" id="listen-status">靠近手機，拍兩下手</p>
-      <div class="meter-block" id="meter-block">
-        <div class="meter-track" aria-hidden="true">
-          <div class="meter-fill" id="meter-fill"></div>
-          <div class="meter-threshold" id="meter-threshold"></div>
-        </div>
-        <p class="visually-hidden" id="meter-live">麥克風音量</p>
+      <div class="oracle-await" id="oracle-await">
+        <button type="button" class="btn btn-primary" id="btn-start">輕觸開啟許願</button>
       </div>
-      <div class="clap-row" aria-live="polite">
-        <div class="clap-dot" id="clap-1">
-          <div class="clap-orb">一</div>
-          <span class="label">第一聲</span>
-        </div>
-        <div class="clap-dot" id="clap-2">
-          <div class="clap-orb">二</div>
-          <span class="label">第二聲</span>
-        </div>
-      </div>
-      <div class="sens">
-        <span>低</span>
-        <input id="sensitivity" type="range" min="0" max="100" value="60" aria-label="拍手靈敏度">
-        <span>高</span>
-      </div>
-      <p class="hint">現場比較吵，請把靈敏度往左調低</p>
-      <button type="button" class="btn-text" id="btn-fallback-listen">現場太吵？改為輕觸抽籤</button>
-    </section>
 
-    <section id="screen-denied" class="screen" hidden aria-label="無法使用麥克風">
-      <h1 class="prompt">請拍手兩聲許願</h1>
-      <div class="denied-box">
+      <div class="oracle-listen" id="oracle-listen" hidden>
+        <p class="status-line" id="listen-status">靠近手機，拍兩下手</p>
+        <div class="meter-block" id="meter-block">
+          <div class="meter-track" aria-hidden="true">
+            <div class="meter-fill" id="meter-fill"></div>
+            <div class="meter-threshold" id="meter-threshold"></div>
+          </div>
+          <p class="visually-hidden" id="meter-live">麥克風音量</p>
+        </div>
+        <div class="clap-row" aria-live="polite">
+          <div class="clap-dot" id="clap-1">
+            <div class="clap-orb">一</div>
+            <span class="label">第一聲</span>
+          </div>
+          <div class="clap-dot" id="clap-2">
+            <div class="clap-orb">二</div>
+            <span class="label">第二聲</span>
+          </div>
+        </div>
+        <div class="sens">
+          <span>低</span>
+          <input id="sensitivity" type="range" min="0" max="100" value="60" aria-label="拍手靈敏度">
+          <span>高</span>
+        </div>
+        <p class="hint">現場比較吵，請把靈敏度往左調低</p>
+        <button type="button" class="btn-text" id="btn-fallback-listen">現場太吵？改為輕觸抽籤</button>
+      </div>
+
+      <div class="denied-box" id="denied-box" hidden>
         <p id="denied-text">無法使用麥克風時，也可以輕觸抽籤。</p>
         <button type="button" class="btn btn-primary" id="btn-tap-draw">輕觸抽籤</button>
         <button type="button" class="btn-text" id="btn-retry-mic">再試一次麥克風</button>
       </div>
-      <form class="lookup" id="lookup-form-denied" autocomplete="off">
-        <label class="lookup-label" for="lot-input-denied">我手上有籤　輸入籤序</label>
-        <div class="lookup-row">
-          <input id="lot-input-denied" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" placeholder="1–32" aria-label="籤序 1 到 32">
-          <button type="submit" class="btn btn-ghost">查看</button>
-        </div>
-        <p class="lookup-msg" id="lookup-msg-denied" role="status"></p>
-      </form>
-    </section>
 
-    <section id="screen-draw" class="screen" hidden aria-label="求籤中" aria-live="polite">
-      <h1 class="prompt">請拍手兩聲許願</h1>
-      <div class="tong-wrap shaking" id="tong-draw" aria-hidden="true"></div>
-      <p class="status-line" id="draw-status">求籤中</p>
+      <div class="oracle-draw" id="oracle-draw" hidden>
+        <p class="status-line" id="draw-status">求籤中</p>
+      </div>
+
+      <p class="fine">良緣社　本頁不蒐集任何資料</p>
     </section>
 
     <section id="screen-result" class="screen" hidden aria-label="籤詩">
@@ -643,27 +624,14 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
           <button type="button" class="btn btn-ghost" id="btn-again">再求一籤</button>
         </div>
 
-        <section class="products" id="products" aria-label="抽到這支籤的人也在看">
-          <h2>抽到這支籤的人也在看</h2>
-          <div class="product-list" id="product-list"></div>
-        </section>
-
-        <form class="lookup" id="lookup-form-result" autocomplete="off">
-          <label class="lookup-label" for="lot-input-result">查看其他籤序</label>
-          <div class="lookup-row">
-            <input id="lot-input-result" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" placeholder="1–32" aria-label="籤序 1 到 32">
-            <button type="submit" class="btn btn-ghost">查看</button>
-          </div>
-          <p class="lookup-msg" id="lookup-msg-result" role="status"></p>
-        </form>
-        <p class="fine">良緣社　本頁不蒐集任何資料</p>
+        <p class="fine result-fine">良緣社　本頁不蒐集任何資料</p>
       </div>
     </section>
   </main>
 </div>
 <div class="toast" id="toast" role="status"></div>
 
-  <script>
+<script>
 /* ============================================================
  * 良緣社．牽絲三十二卦
  * 本頁為靜態前端，不發送、不蒐集、不儲存任何個人資料。
@@ -794,14 +762,41 @@ function showToast(msg) {
   showToast._t = setTimeout(() => el.classList.remove("show"), 2400);
 }
 
+function applyOracleMode(mode) {
+  document.body.dataset.oracle = mode;
+  const awaitBox = $("oracle-await");
+  const listenBox = $("oracle-listen");
+  const deniedBox = $("denied-box");
+  const drawBox = $("oracle-draw");
+  if (awaitBox) awaitBox.hidden = mode !== "await";
+  if (listenBox) listenBox.hidden = mode !== "listening";
+  if (deniedBox) deniedBox.hidden = mode !== "denied";
+  if (drawBox) drawBox.hidden = mode !== "draw";
+}
+
 function showScreen(name) {
-  state.screen = name;
-  document.body.dataset.screen = name;
-  ["home", "listen", "denied", "draw", "result"].forEach((s) => {
-    const el = $("screen-" + s);
-    if (el) el.hidden = s !== name;
-  });
-  if (name !== "listen") stopMicLoop();
+  if (name === "result") {
+    state.screen = "result";
+    document.body.dataset.screen = "result";
+    const oracle = $("screen-oracle");
+    const result = $("screen-result");
+    if (oracle) oracle.hidden = true;
+    if (result) result.hidden = false;
+    stopMicLoop();
+  } else {
+    const mode = (name === "listen") ? "listening"
+      : (name === "denied") ? "denied"
+      : (name === "draw") ? "draw"
+      : "await";
+    state.screen = "oracle";
+    document.body.dataset.screen = "oracle";
+    const oracle = $("screen-oracle");
+    const result = $("screen-result");
+    if (oracle) oracle.hidden = false;
+    if (result) result.hidden = true;
+    applyOracleMode(mode);
+    if (mode !== "listening") stopMicLoop();
+  }
   window.scrollTo(0, 0);
 }
 
@@ -1125,18 +1120,13 @@ function beginDraw(lot) {
   state.drawing = true;
   state.currentLot = lot;
   detachMic();
-  mountTong();
-  const wrap = $("tong-draw");
-  wrap.className = "tong-wrap shaking";
   $("draw-status").textContent = "求籤中";
   showScreen("draw");
   playRattle();
 
-  const shakeMs = reducedMotion() ? 200 : 1250;
-  const riseMs = reducedMotion() ? 80 : 700;
+  const shakeMs = reducedMotion() ? 200 : 800;
+  const holdMs = reducedMotion() ? 80 : 400;
   setTimeout(() => {
-    wrap.classList.remove("shaking");
-    wrap.classList.add("rising");
     $("draw-status").textContent = "籤出";
   }, shakeMs);
   setTimeout(() => {
@@ -1144,7 +1134,7 @@ function beginDraw(lot) {
     buzz([20, 40, 20, 40, 120]);
     revealLot(lot, { replaceUrl: false });
     state.drawing = false;
-  }, shakeMs + riseMs);
+  }, shakeMs + holdMs);
 }
 
 function fortuneClass(fortune) {
@@ -1193,6 +1183,7 @@ function setTab(key) {
 
 function renderProducts(lot) {
   const list = $("product-list");
+  if (!list) return;
   list.innerHTML = "";
   const items = (SHOPLINE_PRODUCTS.byLot && SHOPLINE_PRODUCTS.byLot[lot.n]) || SHOPLINE_PRODUCTS.defaults || [];
   items.forEach((item) => {
@@ -1220,7 +1211,8 @@ function renderProducts(lot) {
     }
     list.appendChild(el);
   });
-  $("products").querySelector("h2").textContent = SHOPLINE_PRODUCTS.heading || "抽到這支籤的人也在看";
+  const prodRoot = $("products"); if (!prodRoot) return;
+  prodRoot.querySelector("h2").textContent = SHOPLINE_PRODUCTS.heading || "抽到這支籤的人也在看";
 }
 
 function lookupFrom(inputId, msgId) {
@@ -1250,7 +1242,7 @@ function goHomeForNewDraw() {
   url.searchParams.delete("n");
   history.replaceState({}, "", url);
   resetClaps();
-  showScreen("home");
+  showScreen("oracle");
 }
 
 /* ---------- 分享圖卡 ---------- */
@@ -1440,10 +1432,6 @@ function init() {
   });
   updateThresholdMark();
 
-  bindLookup("lookup-form", "lot-input", "lookup-msg");
-  bindLookup("lookup-form-denied", "lot-input-denied", "lookup-msg-denied");
-  bindLookup("lookup-form-result", "lot-input-result", "lookup-msg-result");
-
   const n = parseQuery();
   if (n) {
     const lot = lotByN(n);
@@ -1452,7 +1440,16 @@ function init() {
       return;
     }
   }
-  showScreen("home");
+  showScreen("oracle");
+  tryAutoStartMic();
+}
+
+async function tryAutoStartMic() {
+  try {
+    if (!navigator.permissions || !navigator.permissions.query) return;
+    const status = await navigator.permissions.query({ name: "microphone" });
+    if (status.state === "granted") await onStartWish();
+  } catch (e) { /* iOS may not support permissions.query */ }
 }
 
 document.addEventListener("DOMContentLoaded", init);
