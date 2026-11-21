@@ -585,6 +585,9 @@ main { width: 100%; max-width: 440px; flex: 1; display: flex; flex-direction: co
   .tong-wrap { width: min(42vw, 168px); margin-top: 12px; }
 }
 
+/* 單頁鎖定：不讓長按圖片或任何連結開新分頁 */
+img{-webkit-touch-callout:none;-webkit-user-drag:none;user-select:none;-webkit-user-select:none;pointer-events:none;}
+body{-webkit-touch-callout:none;}
   </style>
 </head>
 <body data-screen="oracle" data-oracle="await">
@@ -1532,13 +1535,8 @@ function renderProducts(lot) {
   const items = (SHOPLINE_PRODUCTS.byLot && SHOPLINE_PRODUCTS.byLot[lot.n]) || SHOPLINE_PRODUCTS.defaults || [];
   items.forEach((item) => {
     const hasUrl = !!(SHOPLINE_PRODUCTS.enabled && item.url);
-    const el = document.createElement(hasUrl ? "a" : "div");
+    const el = document.createElement("div");
     el.className = "product" + (hasUrl ? "" : " is-placeholder");
-    if (hasUrl) {
-      el.href = item.url;
-      el.target = "_blank";
-      el.rel = "noopener noreferrer";
-    }
     const name = document.createElement("div");
     name.className = "product-name";
     name.textContent = item.name || "（商品名稱待填）";
@@ -1699,6 +1697,7 @@ function downloadBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
   a.href = url;
   a.download = filename;
+  a.dataset.shareDownload = "1";
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -1831,5 +1830,22 @@ window.__liangyuan = {
 };
 
   </script>
+<script>
+/* 單頁鎖定：所有點擊、長按、拖曳都留在本頁；使用者主動分享／下載除外 */
+(function(){
+  function isShareDownload(el){
+    return !!(el && el.tagName === "A" && el.hasAttribute("download") && el.dataset && el.dataset.shareDownload === "1");
+  }
+  document.addEventListener("click",function(e){
+    var a=e.target.closest&&e.target.closest("a,area");
+    if(a && !isShareDownload(a)){e.preventDefault();}
+  },true);
+  document.addEventListener("auxclick",function(e){e.preventDefault();},true);
+  document.addEventListener("contextmenu",function(e){e.preventDefault();},true);
+  document.addEventListener("dragstart",function(e){e.preventDefault();},true);
+  document.addEventListener("submit",function(e){e.preventDefault();},true);
+  window.open=function(){return null;};
+})();
+</script>
 </body>
 </html>
